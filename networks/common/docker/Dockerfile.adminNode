@@ -1,0 +1,23 @@
+FROM pytorch/pytorch:latest
+
+RUN apt update && \
+  apt install -y jq dnsutils wget net-tools
+
+# Copy the Docker binary from the official Docker image
+COPY --from=docker /usr/local/bin/docker /usr/bin/docker
+
+# Rest of your Dockerfile...
+##  copies from the local to the docker image
+
+COPY /scripts/python/admin_shard.py /root/admin_shard.py
+COPY /scripts/bash/admin_shard.sh  /root/admin_shard.sh
+COPY FederatedLearning /root/FederatedLearning
+
+
+
+
+RUN chmod +x /root/admin_shard.sh
+
+WORKDIR /root
+# Set the entrypoint
+ENTRYPOINT ["/bin/bash"]

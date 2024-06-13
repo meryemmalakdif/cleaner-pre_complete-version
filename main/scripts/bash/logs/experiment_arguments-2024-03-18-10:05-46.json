@@ -1,0 +1,1 @@
+"Namespace(dataset='mnist', partition='noniid-labeldir', n_parties=500, init_seed=0, datadir='../../FederatedLearning/data_manipulation/data/', logdir='./logs/', beta=0.9, device='cuda:0', log_file_name=None)"

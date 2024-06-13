@@ -1,0 +1,49 @@
+FROM pytorch/pytorch:latest
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+RUN apt update && \
+  apt install -y jq dnsutils wget net-tools
+
+RUN python -m pip install --upgrade pip && \
+  pip install torch torchvision web3 idx2numpy numpy click 
+
+RUN npm install -g typescript ts-node
+
+
+# installs IPFS on the system
+RUN wget https://dist.ipfs.io/go-ipfs/v0.12.2/go-ipfs_v0.12.2_linux-amd64.tar.gz && \
+  tar -xvzf go-ipfs_v0.12.2_linux-amd64.tar.gz && \
+  cd go-ipfs && \
+  bash install.sh && \
+  ipfs --version
+
+# creates a dataset directory in the container
+RUN mkdir -p /root/dataset
+
+
+
+##  copies from the local to the docker image
+COPY /setup/zkSync-local-node/accounts.json /root/accounts.json
+COPY /scripts/python/task_publisher.py /root/task_publisher.py
+COPY /scripts/bash/task_publisher.sh  /root/task_publisher.sh
+COPY /scripts/python/task_publisher_round.py /root/task_publisher_round.py
+COPY /scripts/bash/task_publisher_round.sh  /root/task_publisher_round.sh
+COPY FederatedLearning /root/FederatedLearning
+RUN chmod +x /root/task_publisher.sh
+RUN chmod +x /root/task_publisher_round.sh
+
+WORKDIR /root
+
+ENTRYPOINT ["/bin/bash"]
+
+
+## tailored for running federated learning tasks
+## line 9 installing ipfs distribution , same as u did in ur machine 
+
+# jq: Command-line JSON processor for parsing and manipulating JSON data.
+# dnsutils: Provides DNS-related utilities like dig, nslookup, and host.
+# net-tools: Contains networking utilities like ifconfig, netstat, arp

@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  adminShard:
+    hostname: adminShard
+    image: admin-node
+    entrypoint: /root/admin_shard.sh
+    volumes:
+      #- '/usr/bin/docker:/usr/bin/docker'
+      - /var/run/docker.sock:/var/run/docker.sock
+      #- '../../networks/blockchain/sharding/common_genesis_poa.json:/root/common_genesis_poa.json' 
+      - '../../networks/blockchain/sharding:/root/shards' 
+      - '../../networks/blockchain/datadir:/root/mainChain' 
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+networks:
+  default:
+    external:
+      name: BCFL
+

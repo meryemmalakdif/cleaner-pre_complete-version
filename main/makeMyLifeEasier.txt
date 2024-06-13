@@ -1,0 +1,645 @@
+geth --identity "node1" --http  --http.port "8000" --http.corsdomain "*" --datadir "/home/meryem/stage/myOwnCode/geth/pvtchain/geth/pvtchain/node1" --port "30303" --nodiscover --http.api "db,eth,net,web3,personal,miner,admin" --networkid 1234 --nat "any" --allow-insecure-unlock --authrpc.port "8552"
+
+
+
+
+When a user interacts with a smart contract by sending a transaction (such as registering a client in your example), they specify the amount of gas they are willing to pay for the transaction to be executed.
+
+Client registration interactions with BC 
+    Client Sends Transaction:
+        A user (client) initiates a transaction to the deployed smart contract's registerClient function.
+        The client provides necessary parameters such as CPU power, bandwidth, etc.
+
+    Transaction Propagation:
+        The transaction is broadcasted to the blockchain network and propagated to all participating nodes.
+
+    Transaction Inclusion:
+        Miners collect and verify transactions to include them in a block.
+        The transaction goes through consensus mechanisms (e.g., proof of work, proof of stake) to be confirmed and added to a block.
+
+    Execution of Smart Contract Function:
+        Once included in a block and mined, the Ethereum Virtual Machine (EVM) executes the registerClient function of the smart contract.
+        The client's details are stored in the clients mapping under their Ethereum address.
+
+    Event Emission:
+        If the registration is successful, an event named ClientRegistered is emitted.
+        The event includes relevant information such as the address of the registered client.
+
+    Transaction Confirmation:
+        After execution and mining, the transaction becomes part of the immutable blockchain ledger.
+        The transaction is confirmed, and the client's registration is finalized.
+
+    Transaction Receipt:
+        The client receives a transaction receipt containing information about the executed transaction.
+        The receipt includes details such as the transaction hash, gas used, block number, etc.
+
+    Client Registration Complete:
+        At this point, the client's registration process is complete.
+        Their details are securely stored on the blockchain within the smart contract.
+        The client is now eligible to participate in federated learning tasks and other functionalities provided by the smart contract.
+
+
+mapping(address => Client) public clients;
+    Each entry in the mapping takes up storage space on the blockchain, and the cost of storing data in mappings is measured in gas.
+
+Logging:
+
+    Logging is a structured way of recording events and messages that occur during the execution of a program.
+    It allows you to categorize and prioritize messages based on their severity levels (e.g., INFO, WARNING, ERROR, etc.).
+    Logging provides more control over where the messages are recorded (e.g., console, file, database), making it suitable for debugging, monitoring, and troubleshooting applications.
+
+    Example : example.log is the file name
+        logger = setup_logger("example.log", "example_logger")
+
+        # Log some messages
+        logger.info("This is an informational message")
+        logger.warning("This is a warning message")
+        logger.error("This is an error message")
+    Result
+        2022-03-01 10:00:00,123 - example_logger - INFO - This is an informational message
+        2022-03-01 10:00:01,234 - example_logger - WARNING - This is a warning message
+        2022-03-01 10:00:02,345 - example_logger - ERROR - This is an error message
+
+
+Infura
+    allows connection to ipfs with no need to run ipfs node 
+
+
+
+geth --http --http.addr "127.0.0.1" --http.port "8545" --http.api "eth,net,web3,personal,miner" --allow-insecure-unlock --rpc.enabledeprecatedpersonal --networkid 1317 
+
+
+geth --http --http.addr "127.0.0.1" --http.port "8545" --http.api "eth,net,web3,personal,miner" --allow-insecure-unlock --rpc.enabledeprecatedpersonal --networkid 1317 --datadir "./geth/datadir" => gives that same error related to pow
+
+geth --dev --http --http.addr "127.0.0.1" --http.port "8545" --http.api "eth,net,web3,personal,miner" --allow-insecure-unlock --rpc.enabledeprecatedpersonal --networkid 1317 => start the geth local node and creates by default a prefunded account 
+
+
+in ur bash scripts execute this chmod +x your_script.sh
+
+to stop all the running containers do docker stop $(docker ps -q)
+
+
+
+
+Geth allows your computer to connect to the Ethereum blockchain network.
+    Once connected, your Geth client can interact with other nodes on the network, send transactions, query blockchain data, and more.
+
+Compile will compile our Solidity code to bytecode (the code that the Ethereum Virtual Machine (EVM) understands), Ganache can emulates the EVM.
+
+Migrate will deploy the code to the blockchain, in our case, the blockchain could be found in the network “development” we set earlier in the “truffle-config.js” file.
+
+ENode URL serves as a unique identifier for an Ethereum node   enode://<node-id>@<ip-address>:<port>
+
+A mapping
+
+    is a key-value store that associates each key with a value. It allows you to efficiently look up values using keys.
+    An array is an ordered collection of elements of the same type. 
+    enumerate in loops gives indice + item 
+    restricted: a custom modifier that restricts access to certain functions to only the owner of the contract.
+
+model_cid:
+
+    Refers to the Content Identifier (CID) of the main model file stored on IPFS.
+    This file likely contains the architecture and configuration of the neural network, defining how it connects layers and performs computations.
+    It's essential for creating the model structure and enabling predictions.
+
+weights_cid:
+
+    Represents the CID of a separate file containing the trained weights or parameters of the model.
+    These weights are numerical values learned during the model training process and determine the specific behavior of the network.
+    While the model architecture defines the "how", the weights define the "what" the model does – its ability to recognize patterns and make predictions.
+
+What is the nodekey file?
+
+    It's a file generated by Geth (an Ethereum client) when it first initializes.
+    It resides in the ~/.ethereum/geth directory (default location).
+    It stores a unique key that's used to create the node's "enode" ID.
+
+Why delete the nodekey file in this context?
+
+    Scenario: You're using a Dockerfile to create multiple nodes for your private Ethereum network.
+    Problem: If you create multiple nodes from the same Docker image without deleting the nodekey file, they'll all have the same enode ID.
+    Consequence: Nodes with identical enode IDs can't connect and sync properly, causing issues in the network.
+
+http-rpc server
+    The HTTP-RPC server, in the context of Ethereum clients like Geth, is a component that enables communication between the Ethereum client (such as Geth) and external applications or services over the HTTP protocol using Remote Procedure Calls (RPC).
+
+    When the HTTP-RPC server is enabled in Geth, it listens for incoming HTTP requests on a specified port (usually port 8545 by default) and handles Ethereum-related RPC requests sent by external applications. These requests can include actions like querying blockchain data, sending transactions, deploying contracts, and more.
+
+http flag is used to retrieve and send data on rpc on particular port
+
+http api specifies which api our node is supporting web3 , eth , admin , miner , txpool ...
+
+@ip on which to run the node local => localhost
+
+port 
+
+The command that allows personal api in console 
+    geth --http --http.addr "localhost" --http.port 8545 --http.api "eth,net,web3,personal" --allow-insecure-unlock --rpc.enabledeprecatedpersonal
+
+make timeout longer
+    export COMPOSE_HTTP_TIMEOUT=180  # Set timeout to 180 seconds (3 minutes)
+
+keystore:
+
+    Stores encrypted keystore files. Each file represents a single account and contains the private key securely encrypted by a password. These files are crucial for starting the node and accessing funds associated with the accounts.
+
+
+geth/nodekey_owner:
+
+    Holds the private key for the "owner" RPC endpoint. This key grants administrative access to the node through the owner RPC interface. Keep it secure, as compromising it could allow unauthorized control over the node.
+
+geth/nodekey_{i}:
+
+    Files named geth/nodekey_{i} represent private keys for individual miner nodes (where i is an integer). These keys are used for mining on the Ethereum network. Ensure proper security measures for these keys as well.
+
+
+geth/static-nodes.json:
+
+    This file lists the addresses of other Ethereum nodes to connect to as static peers. This helps establish and maintain connections within the network. Carefully select trusted peers to avoid malicious connections.
+
+
+accounts.json:
+
+    Stores information about your accounts, including public addresses and potentially passwords or key identifiers.
+
+
+miners.json:
+
+    Lists the public addresses generated from the private keys of your miner nodes. This information might be relevant for specific consensus protocol configurations during network genesis.
+
+
+     
+
+Key Differences:
+
+    keystore: Individual account keystores (encrypted).
+    geth/nodekey_owner, geth/nodekey_{i}: Private keys for specific node roles (owner, miners).
+    geth/static-nodes.json: Addresses of trusted peer nodes.
+    accounts.json: Public addresses and potentially passwords/key identifiers.
+    miners.json: Public addresses derived from miner node private keys.
+
+
+
+const Score = artifacts.require("Score");
+    uses the artifacts.require function to access the previously compiled Score contract artifact.
+
+Smart Contracts:
+
+    Self-executing programs stored on a blockchain.
+
+
+Migrations:
+
+    Scripts used to manage the deployment and configuration of smart contracts.
+
+When a smart contract is deployed onto a blockchain network, it becomes executable by anyone participating in the network
+
+res ethereum mainnet
+res de test : Kovan, Ropsten, Rinkeby , Goerli
+
+new command 
+    geth --datadir ./ethereum/datadir --syncmode full --http --http.addr "127.0.0.1" --http.port "8545" --http.api "eth,net,web3,personal" --allow-insecure-unlock  --http.corsdomain "*" 
+
+
+
+PoA networks rely on pre-defined validators who are granted permission to create blocks
+In PoA networks, the extraData field is used to store the addresses of the validators
+
+
+network drivers play a crucial role in how containers communicate with each other and the outside world
+
+
+command to check if geth is running : ps aux | grep geth
+
+
+To check the balance of a specific account
+    geth attach http://127.0.0.1:8545
+    web3.fromWei(eth.getBalance('<your_account_address>'), 'ether')
+
+
+Hyperledger Caliper:
+
+    Purpose: Hyperledger Caliper is a blockchain benchmarking tool. 
+    It is used to measure the performance of blockchain networks and consensus algorithms under various workloads and conditions.
+    Caliper allows users to conduct performance tests on different blockchain platforms
+
+Chainlink Nodes: 
+    Chainlink is a decentralized oracle network that connects smart contracts with real-world data, events, and external APIs securely and reliably. 
+    Decentralized oracles, like Chainlink, play a critical role in blockchain ecosystems by bridging the gap between on-chain smart contracts and oﬀ-chain data sources.
+
+
+Abi is used to interact with smart contracts deployed on the Ethereum blockchain
+
+there are typically three main ways to invoke functions on a contract
+    call:
+        Purpose: The call method is used to read data from a contract without making any state changes. It executes the function locally on the node that is making the call, without broadcasting the transaction to the network or updating the blockchain state.
+        Gas Cost: Calling a function using call consumes only a negligible amount of gas, as it does not involve any state changes or require consensus from the network.
+        State Changes: Functions called with call cannot modify the contract's state or emit events.
+
+    send:
+        Purpose: The send method is used to send Ether along with a function call to a contract. It allows you to execute a function that modifies the contract's state and potentially emits events, while also transferring Ether to the contract.
+        Gas Cost: Invoking a function with send consumes gas for both executing the function and transferring Ether. The gas cost depends on the complexity of the function and the amount of data being sent.
+        State Changes: Functions called with send can modify the contract's state and emit events.
+
+    transact:
+        Purpose: The transact method is used to invoke functions on a contract and make state changes without sending Ether. It is similar to send but does not involve Ether transfer.
+        Gas Cost: Invoking a function with transact consumes gas for executing the function and updating the contract's state, but there is no additional cost for transferring Ether.
+        State Changes: Functions called with transact can modify the contract's state and emit events.
+
+When interacting with smart contracts we need contract @ and abi
+    @ The address is used to locate and identify the specific instance of the smart contract on the blockchain
+    ABI defines how to interact with a smart contract, including the structure of its functions, events, and data
+    
+
+Anyone can interact with the deployed smart contract 
+    After deployment, anyone can interact with the functions of the smart contract,
+    as long as they have the contract's address.
+    These interactions are done by sending transactions to the contract's address,
+    specifying which function of the contract you want to call and any required parameters
+
+
+H5 format for storing large, complex datasets, including machine learning models
+
+IPFS daemon  responsible for running your local IPFS node and enabling communication with the IPFS network
+
+
+I changed the solidity version in tuffle config js 
+
+
+Do not forget to connect the peers , else u won t be able to deploy contracts and u ll get that error of 750 s and block not mined
+
+Do not forget the env vars : NETWORK_ID , SERVERS , CLIENTS
+
+u need to automate the process of creating and starting containers , u don t want each time running a container manually
+
+
+in docker-compose 
+    volumes:
+    - './datasets/$DATASET/$CLIENTS:/root/dataset'
+    allows data in the host directory to be accessed and manipulated by processes running inside the container at /root/dataset
+
+    In a Docker Compose file, the line extra_hosts: - "host.docker.internal:host-gateway"
+    allows a Docker container to communicate with services running on the host machine using the hostname host
+    docker.internal. This configuration ensures that when the container refers to host.docker.internal, it resolves to the IP address of the host machine
+
+
+    IPFS_API=/dns/host.docker.internal/tcp/5001, the /dns/host.docker.internal/tcp/5001 part specifies how to connect to a service running on the host machine's localhost from within a Docker container. Here's what it means:
+
+    /dns/host.docker.internal: This part indicates that the hostname host.docker.internal should be resolved using DNS resolution.
+    /tcp/5001: This specifies the protocol (tcp) and port (5001) to use for the connection.
+
+
+
+The model's architecture is given by the task publisher
+
+By connecting directly to a miner node as a provider, the client can directly interact with the Ethereum blockchain. This is necessary for sending transactions, and querying contract states
+ 
+
+Even though the client has an Ethereum account and password, it still requires a connection to a miner as a provider to perform transactions and other blockchain-related operations. This is because the miner facilitates direct interaction with the Ethereum network, ensuring that the client's transactions are processed and that it remains in sync with the current state of the blockchain
+
+initial bootstrapping specifically refers to the process of enabling new nodes to join the network and synchronize with existing nodes
+
+Bootnodes are special nodes in the Ethereum network that help new nodes discover and connect to other peers.
+
+    Generate Key Pair: The bootnode -genkey command generates a new keypair, consisting of a private key and a corresponding public key. This keypair is generated using cryptographic algorithms.
+
+    Store Key Pair: The generated keypair is typically stored in a file on the local filesystem. By default, the private key is stored in a file named nodekey and the public key is not saved. However, you can specify a different filename for the private key using the -nodekey option.
+
+    Use in Bootnode: Once the keypair is generated and stored, you can use the private key to start a bootnode using the bootnode command. The bootnode uses its private key to authenticate itself to other nodes in the network.
+
+    Discovery: Other Ethereum nodes in the network can use the bootnode's public key to discover and connect to it. The bootnode advertises its presence and provides information about other nodes in the network to newly joining nodes.
+
+    Bootnodes act as initial points of contact for new nodes joining the network. Instead of requiring new nodes to know the IP addresses of existing nodes in advance, they can connect to bootnodes to obtain information about other nodes in the network. This simplifies the process of peer discovery
+
+
+
+Transaction Management: Ethereum accounts are used to manage transactions on the Ethereum blockchain. They hold Ether and can send transactions, deploy smart contracts, and interact with the blockchain.
+
+Node Identity: Node keys are used to establish the identity of an Ethereum node within the network. They are crucial for peer-to-peer communication and are used to generate the node's enode URL, which other nodes use to connect to it.
+
+
+The address derived in the generate_keys function is more focused on network identity and communication, whereas the address created with geth --datadir account new --password is geared towards account management and blockchain interactions.
+
+Geth nodes typically have enodes to establish connections with other nodes in the network
+
+Clique relies on a set of pre-approved validators who take turns proposing and validating blocks
+    Validators are selected based on their identity rather than computational power or stake
+    period : frequency of block creation by validators
+    The epoch determines how often validator sets are refreshed, promoting decentralization and security by regularly changing the participants responsible for block validation.
+
+enode enables establishing connections between nodes in a peer-to-peer network and it is static
+
+The port number 30303 is the default port for Ethereum nodes to establish connections and communicate within the network
+
+docker exec -it
+    allows access to a docker container and execute command inside it in an interactive mode
+
+docker network inspect bflnet | jq '.[0].Containers' returns this
+    {
+    "08622c7cfd0a799f257eb65729bb98bc41af7afbffbc38b1f9ba5077d6048d9c": {
+        "Name": "bfl_geth-miner_5",
+        "EndpointID": "03031f3e8f9b8e2f24573dd0ec9e2a1e96de183739ba70e2cfce8745b0b76b58",
+        "MacAddress": "02:42:ac:10:f0:0c",
+        "IPv4Address": "172.16.240.12/20",
+        "IPv6Address": ""
+    },
+    "0b54c68f22e34207a8fb9462934d9ae81a477aa34cc45872502b46682c42cc36": {
+        "Name": "bfl_geth-rpc-endpoint_1",
+        "EndpointID": "7c69a415a504a7b46b8636208401b5eb7510d3abab6ad3332caa02e5073381ec",
+        "MacAddress": "02:42:ac:10:f0:06",
+        "IPv4Address": "172.16.240.6/20",
+        "IPv6Address": ""
+    },
+    }
+
+
+docker exec -it container command 
+    executes command from the docker container
+
+geth --exec "console.log(admin.nodeInfo.enode)" attach => attach is to connect to an already running geth node???
+
+By default, the enode URL in Geth contains 127.0.0.1 because it is set to listen on the local interface for incoming connections
+    This default behavior ensures that Geth only accepts connections from the local machine
+    When running Geth in a Docker container or in a networked environment where nodes need to communicate with each other, 
+    using 127.0.0.1 in the enode URL would restrict connectivity to within the same container or machine. 
+    To enable communication between nodes running in different containers or on different machines,
+    it is necessary to replace 127.0.0.1 with the appropriate IP address that can be reached by other nodes in the network
+
+
+model in utils.json is the model cid returned after storing it on the ipfs
+
+Relu  
+    maintain gradients that are not close to zero unlike other activation functions like tanh and
+    ensures that the gradients do not vanish for positive inputs
+    => helps preventing gradient vanishing
+
+Softmax
+    calculates probabilities that indicate the model's confidence in each class
+
+tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1))
+    (28, 28, 1) indicates that the input data is expected to have a shape of 28x28 pixels with a single channel (grayscale).
+    32 number of filters in the convolutional layer
+    ((3, 3)) defines the size of the convolutional filters.  Here, each filter has a size of 3x3 pixels.
+
+
+unlocking an account before sending transactions is a fundamental security measure that ensures only authorized actions are performed on the blockchain
+
+
+Block sealing failed 
+    The warning "Block sealing failed err='signed recently, must wait for others'" is encountered in Ethereum networks that utilize a consensus mechanism 
+    such as Proof of Authority (PoA) with the Clique protocol. This message indicates a situation where a node, designated as a signer (or sealer),
+    attempts to seal (create) a new block but is temporarily restricted because it has already signed a block recently and the protocol requires participation
+    from other signers before it can sign again. This mechanism is designed to ensure a fair distribution of block creation among all signers and prevent
+    any single signer from dominating the block creation process.
+
+Genesis File extradata:
+    The extradata field specify the initial set of authorized signers (validators) who are allowed to seal (create) blocks
+
+stop all containers 
+    docker stop $(docker ps -q)
+
+
+my deployed contracts
+    0xbbE8792247a10b0F20ad62184B42bA265bC93012
+    0xb7Cb42fdEdd0f7f25bD1BeB778B951FDaA07d6AA
+
+
+
+FL docker compose file
+    With a replicas: 2 setting, you will indeed have two separate container instances running based on the specified service configuration.
+    Each container will have its own environment variables, volumes, and custom host mappings as defined in the Docker Compose file.
+
+host.docker.internal:host-gateway
+    "host.docker.internal:host-gateway". This part allows the container to access services running on the Docker host machine (your computer) if necessary.
+    If the containerized application requires any interaction with services on your local machine (e.g., a database, API, or another service), it can use "host.docker.internal" to reach them.
+    /dns/host.docker.internal/tcp/5001 indicates that the application within the container likely needs to interact with an IPFS
+    "host.docker.internal" allows any container to connect to services running on the Docker host machine
+
+
+
+DNS lookup
+    Takes a domain name and returns the associated IP address 
+
+
+Reverse DNS lookup
+    Takes an IP address and returns the associated domain name 
+    From the ip @ of the running container, to retrieve the hostname of the host machine where the Docker container is running
+
+
+comments in client.sh script
+    #!/bin/sh
+    # awk is used for text extraction
+    # sed is used for text processing for example deleting smth , modifying a word by another : s/ is for substitution , here we replace addr: with empty string
+
+    IP=$(ifconfig br-26b794ccf606 | grep 'inet' | awk '{print $2}'  # will get the ip @ of the running container
+    echo "IP: $IP"
+    INDEX=$(dig -x $IP +short | sed 's/[^0-9]*//g') ## here we re only keeping the numbers
+    echo "INDEX: $INDEX"
+    ACCOUNT=$(jq -r '.clients' accounts.json | jq 'keys_unsorted' | jq -r "nth($((INDEX-1)))")
+    echo "ACCOUNT: $ACCOUNT"
+    PASSWORD=$(jq -r '.clients' accounts.json | jq -r ".[\"$ACCOUNT\"]")
+    echo "PASSWORD: $PASSWORD"
+
+    PRVINDEX=$((INDEX % MINERS))
+    if [ "$PRVINDEX" -eq "0" ]; then
+    PRVINDEX=$MINERS
+    fi
+
+    # later I have to pass training and testing dataset , ipfs too
+
+    # awk '{print $2}' extracts the second column from each line
+
+    # was like this | sed 's/addr://') s stands for substitution
+
+    # s/[^0-9]*//g: This pattern instructs sed to substitute (replace) any sequence of characters that are not numbers (0-9) with nothing, effectively deleting them
+
+
+Understanding some bash code
+    jq -r '.clients' accounts.json | jq 'keys_unsorted' | jq -r "nth($((INDEX-1)))" 
+        q -r '.clients' accounts.json takes the JSON file "accounts.json" and extracts only the "clients" section using the jq tool.
+        jq 'keys_unsorted' pipes the output from the first step into another jq command that retrieves the keys (client names) within the "clients" section, keeping them in their original order.
+        jq -r "nth($((INDEX-1)))" extracts a specific key based on a numerical index
+
+
+In docker compose if we set hostname in a service client :
+    By default, Docker Compose appends a unique identifier to the service name to create individual container names.
+    For example, the containers might be named client1, client2, and client3 if you specify replicas: 3.
+
+
+To see the deployed contract 
+    truffle console
+    let myContract = await NoScore.deployed();
+    myContract to see its address and other relevant infos
+
+
+
+TensorDataset(images, labels): This line creates a dataset object that combines the images and labels into a single dataset. Each element in this dataset will consist of an image-label pair.
+DataLoader(dataset, batch_size=32, shuffle=True): This line creates a data loader object that helps in efficiently loading and iterating over the dataset in batches during the training process.
+
+command that starts docker container while setting env vars and the extra host entry for host.docker.internal:
+    docker run -e CONTRACT=your_contract_value --add-host host.docker.internal:host-gateway -d your_image_name
+
+
+
+/dns/host.docker.internal/tcp/5001:
+        This address format is used within Docker containers to connect to services running on the host machine. host.docker.internal is a special DNS name that resolves to the internal IP address used by the host machine. This is particularly useful when your Docker container needs to communicate with services running on the Docker host, such as an IPFS daemon or a database.
+        The use of host.docker.internal is supported on Docker for Windows and Docker for Mac but is not available by default on Linux. It allows containers to access the host machine as if it were a remote server, which is useful in development environments where services running on the host need to be accessed by containers.
+        The /dns/ prefix indicates that a DNS lookup should be performed to resolve the address.
+/ip4/127.0.0.1/tcp/5001:
+        This address directly specifies an IPv4 address (127.0.0.1) and a port (5001). 127.0.0.1 is the loopback address, also known as localhost, which points back to the local machine. This address format is used when a service within the same machine needs to connect to another service on the same machine.
+        In the context of Docker, using 127.0.0.1 from within a container does not refer to the host machine but to the container itself. Therefore, this address format is used when the service you are trying to connect to is running inside the same container or when containers are networked in such a way that they can directly use the loopback interface to communicate.
+
+When to Use Each:
+
+    Use /dns/host.docker.internal/tcp/5001 when you need a Docker container to connect to a service running on the Docker host machine. This is common in development environments where the container needs to access databases, APIs, or other services running on the host.
+    Use /ip4/127.0.0.1/tcp/5001 when the service you are connecting to is running on the same machine and you are not inside a Docker container, or when services within the same Docker network need to communicate directly with each other.
+
+nounce
+    The term "nonce" in the context of blockchain and Ethereum transactions refers to a number used only once. It is a unique identifier attached to each transaction to prevent replay attacks and ensure that transactions are processed in the correct order. The nonce is a sequential number assigned to each transaction originating from an Ethereum account. It helps maintain the integrity and security of the blockchain network by ensuring that each transaction is executed only once.
+
+when u get that error of docker compose using a network that was deleted use this to rm all the containers docker rm $(docker ps -a -q)
+
+when u get that error of previously deleted accounts get displayed when u do eth.accounts , thats because ur using old docker images . u created new accounts so u need to re copy the genesis to the container so u need to build the images again
+
+once a trainer is done training he has two options to store the model 
+    Save Only Model Weights:
+
+        You can save only the model's learned parameters by using torch.save(model.state_dict(), PATH). This method is recommended for saving and loading model weights.
+        To load the saved weights into a new model, you need to create an instance of the same model and then load the state_dict using new_model.load_state_dict(torch.load(PATH)).
+
+    Save Entire Model with Structure:
+
+        If you want to save the entire model along with its structure, you can use torch.save(model, PATH). This method saves the model as a Python module.
+        When loading this type of saved model, you can directly use model = torch.load(PATH).
+
+
+operator contract address 0x96E6D3B7B0366c0705B68A82BF723a92F32F436A
+
+
+// recipient=0x04c3bF2541F41f66678ac6165fd91cD0DDac9F7C
+// Transaction HexBytes('0xc5b1119017ad27d5ea5d992558146452bea6ba24eceeeeb9716652607dc40cb3')
+
+
+Link token 0xdd580B0B809072Df0F7f33704A6fA7542A1e6482
+operator contract 0xD9EE24F7a389465768625C93E93fe2fDB5eAe478
+
+A testnet consumer contract 0xC1C93943Ba7038337b4969205741717721D0D1c3
+
+external job id  db19b95097e54dd5b032fef434649c8c
+
+meryem job id 6e0072c2037c4c909ef25a00a5d67d2f
+
+
+getting started function 0xb5e83438015B3B4492022b9f36e4a6BEa5c2a1c3
+
+
+create a geth node for the sepolia network geth --sepolia --port 30313 --http --http.port 18545 --http.api eth,net,web3,debug --ws --ws.port 18546 --authrpc.port 18551
+
+
+router 0x6E2dc0F9DB014aE19888F539E59285D2Ea04244C
+
+
+export DENO_INSTALL="/home/meryem/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
+
+sudo lsof -i :8545 then kill the pid listening on 8545
+
+
+to get the private key ./geth-decrypt-key -key UTC--2024-03-18T10-19-31.313521879Z--60db220cc5946d71b69ae34fbf56c0015e79c917 -password ZU2clYwP0vcHhLm
+
+get latest block info in geth attach mode eth.getBlock('latest') 
+
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install ethereum
+
+
+sudo usermod -aG docker $USER
+ls -l /var/run/docker.sock
+sudo chmod 666 /var/run/docker.sock
+sudo systemctl restart docker
+
+
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+npm install -g truffle
+
+
+git config http.postBuffer 524288000
+
+
+
+when u get that error of  
+    error checking context: no permission to read from '/home/meryem/stage/pfe/truffle/networks/blockchain/sharding/nodekey_0x5a836446ed5300E97Bd2D69Cf60E53Eca97c539D'
+
+u solve it by doing 
+    sudo chown -R meryem:meryem networks/blockchain/sharding
+
+
+
+kfch 5rebt f geth node container to get the private key of the account am using to deploy       
+    docker exec -it zksync-local-node_geth_1 sh
+    cd /var/lib/geth/data
+    ls
+    apk update
+    apk add python3 py3-pip
+    pip3 install web3
+    apk add --no-cache nano
+    nano test.py
+    the content of test.py file
+        import json
+        from web3 import Web3
+
+        # Path to the keystore file
+        keystore_file_path = 'keystore/UTC--2019-04-06T21-13-27.692266000Z--8a91dc2d28b689474298d91899f0c1baf62cb85b'
+
+        # Path to the password file
+        password_file_path = 'password.sec'
+
+        # Read the password from the password file
+        with open(password_file_path, 'r') as password_file:
+            password = password_file.read().strip()
+
+        # Read the keystore file
+        with open(keystore_file_path, 'r') as keystore_file:
+            keystore = json.load(keystore_file)
+
+        # Create a Web3 instance
+        w3 = Web3()
+
+        # Decrypt the private key
+        private_key = w3.eth.account.decrypt(keystore, password)
+
+        # Print the private key in hex format
+        print("Private key (hex):", private_key.hex())
+    python3 test.py
+    pk:  0xe20eb92b34a3c5bd2ef0802a4bc443a90e73fc4a0edc4781446d7b22a44cc5d8
+    address: 0x8A91DC2D28b689474298D91899f0c1baF62cB85b
+
+
+eth.chainId() ==> get the chain id of l1
+
+used this 0x3eb15da85647edd9a1159a4a13b9e7c56877c4eb33f614546d4db06a51868b1c to deplo the contracts on layer 2
+
+command to deploy on layer 2 npx hardhat deploy-zksync --script deploy_1.ts
+
+npx hardhat deploy-zksync:libraries
+
+to compile either on l1 or l2 : npx hardhat compile
+
+states : selection , training , evaluation , aggregation , selection , training , evaluation , aggregation 
+
+for now states : selection , training , evaluation , aggregation , training , evaluation , aggregation 
+
+
+use remix to set the authorized senders 
+
+npx hardhat compile
+
+npx hardhat run scripts/deploy_4.js

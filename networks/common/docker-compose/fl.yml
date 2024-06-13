@@ -1,0 +1,108 @@
+version: '3.7'
+
+services:
+  # aggregator:
+  #   hostname: aggregator
+  #   image: fl-node
+  #   # network_mode: "host"
+  #   entrypoint: /root/aggregator.sh
+  #   deploy:
+  #     replicas: $AGGREGATORS
+  #   environment:
+  #     - IPFS_API=/dns/host.docker.internal/tcp/5001  
+  #     - CONTRACT=$CONTRACT
+  #     - TASK=$TASK
+  #     - PRIVATEKEY=$PRIVATEKEY
+  #   volumes:
+  #     # Use the following volume for a public validation dataset:
+  #     - '../../FederatedLearning/trainers.txt:/root/trainers.txt'
+  #     - '../../FederatedLearning/submissions_evaluation.txt:/root/submissions_evaluation.txt'
+  #     - '../../FederatedLearning/submissions.txt:/root/submissions.txt'
+  #     - '../../FederatedLearning/group_instance_deletion_based_evaluation.txt:/root/group_instance_deletion_based_evaluation.txt'
+  #     - '../../FederatedLearning/similarity_based_evaluation.txt:/root/similarity_based_evaluation.txt'
+  #     - '../../FederatedLearning/marginal_gain_based_evaluation.txt:/root/marginal_gain_based_evaluation.txt'
+  #     - '../../FederatedLearning/results.txt:/root/results.txt'
+  #     - '../../FederatedLearning/data_manipulation/data:/root/dataset'
+  #     - ../../artifacts-zk/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+  #     #- ../../build/contracts/$ABI.json:/root/abi.json
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+
+  client:
+    hostname: client
+    image: fl-node
+    #network_mode: "host"
+    entrypoint: /root/client.sh
+    deploy:
+      replicas: $CLIENTS
+    environment:
+      - IPFS_API=/dns/host.docker.internal/tcp/5001
+      - CONTRACT=$CONTRACT
+      - TASK=$TASK
+      - PRIVATEKEY=$PRIVATEKEY
+    volumes:
+      - '../../FederatedLearning/mimi.txt:/root/mimi.txt'
+      - '../../FederatedLearning/results.txt:/root/results.txt'
+      - '../../FederatedLearning/trainers.txt:/root/trainers.txt'
+      - '../../FederatedLearning/updates.txt:/root/updates.txt'
+      - '../../FederatedLearning/clients.txt:/root/clients.txt'
+      - '../../FederatedLearning/data_manipulation/data:/root/dataset'
+      - ../../artifacts-zk/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  task_publisher:
+    hostname: task_publisher_round
+    image: task-publisher-node
+    # network_mode: "host"
+    entrypoint: /root/task_publisher_round.sh
+    deploy:
+      replicas: $TASKPUBLISHERS
+    environment:
+      - IPFS_API=/dns/host.docker.internal/tcp/5001
+      - CONTRACT=$CONTRACT
+      - TASK=$TASK
+      - PRIVATEKEY=$PRIVATEKEY
+    volumes:
+      - '../../FederatedLearning/updates.txt:/root/updates.txt'
+      - ../../artifacts-zk/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+      #- ../../build/contracts/$ABI.json:/root/abi.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  admin:
+    hostname: admin
+    image: fl-node
+    # network_mode: "host"
+    entrypoint: /root/admin.sh
+    deploy:
+      replicas: $ADMINS
+    environment:
+      - IPFS_API=/dns/host.docker.internal/tcp/5001
+      - CONTRACT=$CONTRACT
+      - CONTRACT_REPUTATION=$CONTRACT_REPUTATION
+      - CONTRACT_ORACLE=$CONTRACT_ORACLE
+      - CONTRACT_ORACLE_AGGREGATOR=$CONTRACT_ORACLE_AGGREGATOR
+      - TASK=$TASK
+      - PRIVATEKEY=$PRIVATEKEY
+      - EVALUATION_NAME=$EVALUATION_NAME
+    volumes:
+      - '../../FederatedLearning/submissions.txt:/root/submissions.txt'
+      - '../../FederatedLearning/states.txt:/root/states.txt'
+      - '../../FederatedLearning/michou.txt:/root/michou.txt' 
+      - '../../FederatedLearning/performance.txt:/root/performance.txt' 
+      - ../../artifacts-zk/contracts/$ABI_FILE_REP.sol/$ABI_REP.json:/root/abi_rep.json
+      - ../../artifacts-zk/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+      - ../../artifacts/contracts/Oracle-contracts/$ABI_FILE_ORACLE.sol/$ABI_ORACLE.json:/root/abi_oracle.json
+      - ../../artifacts/contracts/Oracle-contracts/$ABI_FILE_ORACLE_AGGREGATOR.sol/$ABI_ORACLE_AGGREGATOR.json:/root/abi_oracle_aggregator.json
+
+ 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+networks:
+  default:
+    external:
+      name: BCFL
+

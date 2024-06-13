@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  publisher:
+    hostname: task_publisher
+    image: task-publisher-node
+    network_mode: "host"
+    entrypoint: /root/task_publisher.sh
+    deploy:
+      replicas: $TASKPUBLISHERS
+    environment:
+      - IPFS_API=/dns/host.docker.internal/tcp/5001
+      - CONTRACT=$CONTRACT
+      - PRIVATEKEY=$PRIVATEKEY
+    volumes:
+      #- ../../build/contracts/$ABI.json:/root/abi.json
+      # - ../../artifacts/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+      - ../../artifacts-zk/contracts/$ABI_FILE.sol/$ABI.json:/root/abi.json
+      - ../../../deploy:/root/deploy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  default:
+    external:
+      name: BCFL

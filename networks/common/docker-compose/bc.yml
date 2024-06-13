@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  rpc-endpoint:
+    hostname: rpc-endpoint
+    image: bc-node
+    entrypoint: /owner.sh
+    environment:
+      - NETWORK_ID=${NETWORK_ID}
+      - SHARDING=${SHARDING}
+    volumes:
+      - '../../networks/blockchain/sharding:/root/shards' 
+      - '../../networks/blockchain/datadir:/root/mainChain' 
+    command:
+      --allow-insecure-unlock
+      --http
+      --http.addr="0.0.0.0"
+      --http.port=8545
+      --http.api="eth,web3,net,admin,personal"
+      --http.corsdomain="*"
+      --ws
+      --ws.addr="0.0.0.0"
+      --ws.port=8546
+      #--netrestrict="172.16.254.0/20"
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  validator:
+    hostname: validator
+    deploy:
+      replicas: $MINERS
+    image: bc-node
+    entrypoint: /validator.sh
+    environment:
+      - NETWORK_ID=${NETWORK_ID}
+      - SHARDING=${SHARDING}
+    volumes:
+      - '../../FederatedLearning/mimi.txt:/mimi.txt' 
+      - '../../networks/blockchain/sharding:/root/shards' 
+      - '../../networks/blockchain/datadir:/root/mainChain' 
+    command:
+      --mine
+      --miner.threads=1
+      --allow-insecure-unlock
+      --http
+      --http.addr="0.0.0.0"
+      --http.port=8545
+      --http.api="eth,web3,net,admin,personal"
+      --http.corsdomain="*"
+      --ws
+      --ws.addr="0.0.0.0"
+      --ws.port=8546
+      #--netrestrict="172.16.254.0/20"
+
+
+networks:
+  default:
+    external:
+      name: BCFL
+
